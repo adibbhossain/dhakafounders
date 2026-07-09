@@ -1,9 +1,69 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Search, Zap, Users, TrendingUp, CheckCircle, ArrowUpRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronDown, Users, TrendingUp, Zap, CheckCircle2, ArrowUpRight } from 'lucide-react';
+
+const Counter = ({ target, suffix = '' }: { target: number; suffix?: string }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const duration = 1500; // ms (all counters will take exactly 1.5s)
+    const stepTime = 16;   // ms (~60fps)
+    const steps = duration / stepTime;
+    const increment = target / steps; // Float increment!
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [target]);
+
+  return <>{count}{suffix}</>;
+};
 
 export default function Home() {
-  // Sample featured startups for the landing page mockup
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const headlines = [
+    {
+      text: (
+        <>
+          Discover the <span className="gradient-text">Builders</span> Shaping <span className="gradient-text">Bangladesh's</span> Tech Ecosystem.
+        </>
+      ),
+    },
+    {
+      text: (
+        <>
+          The <span className="gradient-text">Launchpad</span> for Builders: Grow Your Startup <span className="gradient-text">in the Open</span>.
+        </>
+      ),
+    },
+    {
+      text: (
+        <>
+          Discover the <span className="gradient-text">Ecosystem</span>: Where Founders, Builders, and Investors <span className="gradient-text">Unite</span>.
+        </>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % headlines.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   const featuredStartups = [
     {
       name: 'ShebaFlow',
@@ -36,88 +96,210 @@ export default function Home() {
 
   return (
     <div className="relative w-full overflow-hidden bg-brand-light min-h-screen">
-      {/* Background Decorative Blobs */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none opacity-50 z-0">
-        <div className="radial-glow w-full h-full" />
+
+      {/* HERO GRADIENT BLUEISH BACKGROUND */}
+      <div className="absolute top-0 left-0 right-0 h-[92vh] bg-gradient-to-b from-[#2A81C7]/12 via-[#2A81C7]/3 to-transparent pointer-events-none z-0" />
+
+      {/* BACKGROUND GRAPHICS */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-brand-primary/15 blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-brand-primary/10 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-brand-primary/5 blur-3xl" />
       </div>
-      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute top-[40%] left-[-10%] w-[600px] h-[600px] rounded-full bg-brand-secondary/5 blur-[150px] pointer-events-none" />
 
-      {/* Main Container */}
-      <div className="relative z-10 bg-grid-pattern w-full pb-20">
-        
-        {/* HERO SECTION */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 text-center lg:pt-32">
-          {/* Animated Announcement Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-xs font-semibold mb-6 animate-fade-in shadow-sm">
-            <Sparkles className="h-3.5 w-3.5 text-brand-primary fill-brand-primary/20" />
-            <span>Discover the Ecosystem</span>
-          </div>
+      {/* Dot Pattern with 35% opacity overlay */}
+      <div className="absolute inset-0 pointer-events-none opacity-35 z-0" style={{ backgroundImage: 'radial-gradient(circle, #2A81C7 1.2px, transparent 1.2px)', backgroundSize: '40px 40px' }} />
 
-          {/* Primary Headline */}
-          <h1 className="font-jakarta text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-brand-dark max-w-4xl mx-auto leading-[1.1] mb-6 animate-slide-up">
-            Empowering Bangladesh’s Tech Future:{' '}
-            <span className="text-gradient">Connect, Build, and Scale</span>
+      {/* HERO SECTION */}
+      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center flex flex-col items-center justify-center min-h-[88vh]">
+        {/* Animated Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 mb-8 animate-fade-in">
+          <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
+          <span className="text-xs sm:text-sm font-semibold text-brand-primary uppercase tracking-wider font-jakarta">
+            Bangladesh's #1 Founder Directory
+          </span>
+        </div>
+
+        {/* Dynamic Heading */}
+        <div className="min-h-[14rem] sm:min-h-[10rem] md:min-h-[12rem] flex flex-col items-center justify-center w-full">
+          <h1 key={currentIndex} className="font-jakarta text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-brand-dark leading-tight mb-6 max-w-4xl mx-auto tracking-tight animate-slide-up">
+            {headlines[currentIndex].text}
           </h1>
+        </div>
 
-          {/* Subheadline (combining visual tone and secondary catchphrase) */}
-          <p className="font-sans text-lg sm:text-xl text-brand-muted max-w-2xl mx-auto leading-relaxed mb-10 animate-slide-up [animation-delay:100ms]">
-            The launchpad for builders to <span className="text-brand-dark font-medium">grow your startup in the open</span>. Where founders, builders, and investors unite to fund dreams and support each other's growth.
-          </p>
+        {/* Copy */}
+        <p className="font-sans text-lg sm:text-xl text-brand-muted max-w-2xl mx-auto mb-10 leading-relaxed">
+          A vibrant community where founders, investors, and builders grow and fund their dreams together. Join Bangladesh's most supportive startup ecosystem.
+        </p>
 
-          {/* Interactive CTAs */}
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 animate-slide-up [animation-delay:200ms]">
-            <Link
-              href="/directory"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand-primary hover:bg-brand-primary-hover text-white text-base font-semibold px-8 py-4 rounded-xl shadow-lg shadow-brand-primary/25 hover:shadow-xl hover:shadow-brand-primary/30 active:scale-98 transition-all"
-            >
-              Explore Directory
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-            <Link
-              href="/dashboard"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white border border-brand-border/80 text-brand-dark text-base font-semibold px-8 py-4 rounded-xl hover:bg-slate-50 shadow-sm active:scale-98 transition-all"
-            >
-              Join as Founder
-            </Link>
+        {/* Hero CTAs */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 w-full sm:w-auto">
+          <Link
+            id="hero-explore-cta"
+            href="/directory"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl font-semibold bg-brand-primary hover:bg-brand-primary-hover text-white shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/30 hover:-translate-y-0.5 active:translate-y-0 px-8 py-4 text-base transition-all duration-200"
+          >
+            Explore Directory
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            id="hero-join-cta"
+            href="/dashboard"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl font-semibold border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white bg-transparent hover:-translate-y-0.5 active:translate-y-0 px-8 py-4 text-base transition-all duration-200"
+          >
+            Join as Founder
+          </Link>
+        </div>
+
+        {/* Social Proof overlapping avatars */}
+        <div className="flex items-center justify-center gap-3 animate-fade-in mb-8">
+          <div className="flex -space-x-3">
+            <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-md bg-blue-600" style={{ zIndex: 5 }}>SK</div>
+            <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-md bg-emerald-600" style={{ zIndex: 4 }}>RH</div>
+            <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-md bg-purple-600" style={{ zIndex: 3 }}>AM</div>
+            <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-md bg-orange-600" style={{ zIndex: 2 }}>NI</div>
+            <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-md bg-pink-600" style={{ zIndex: 1 }}>FR</div>
           </div>
-        </section>
+          <p className="text-sm text-brand-muted font-medium font-sans">
+            <span className="font-bold text-brand-dark">500+ founders</span> already building in the open
+          </p>
+        </div>
 
-        {/* ECOSYSTEM STATS */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="glassmorphism rounded-2xl border border-brand-border/60 p-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 shadow-sm divide-y md:divide-y-0 md:divide-x divide-brand-border/40">
+        {/* Carousel indicators */}
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+          {headlines.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`h-2 rounded-full transition-all duration-300 bg-brand-primary ${currentIndex === idx ? 'w-6' : 'w-2 opacity-30 hover:opacity-60'
+                }`}
+              aria-label={`Headline ${idx + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-brand-muted/50 animate-bounce pointer-events-none">
+          <span className="text-[10px] font-bold uppercase tracking-widest font-sans">Scroll to explore</span>
+          <ChevronDown className="w-4 h-4" />
+        </div>
+      </section>
+
+      {/* STATISTICS SECTION */}
+      <section className="py-20 bg-white border-y border-brand-border/60 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-sm font-semibold text-brand-primary uppercase tracking-widest mb-12 font-jakarta">
+            Community at a Glance
+          </p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { label: 'Startups Registered', value: '500+' },
-              { label: 'Active Builders', value: '1,200+' },
-              { label: 'Verified Investors', value: '120+' },
-              { label: 'Funding Facilitated', value: '৳250M+' },
+              { label: 'Active Founders', value: 500, suffix: '+' },
+              { label: 'Startups Listed', value: 320, suffix: '+' },
+              { label: 'Active Investors', value: 120, suffix: '+' },
+              { label: 'Cities Represented', value: 8, suffix: '+' },
             ].map((stat, idx) => (
-              <div key={idx} className="flex flex-col items-center justify-center text-center p-4 first:pt-0 md:first:pt-4 md:pl-0">
-                <span className="font-jakarta text-3xl sm:text-4xl font-extrabold text-brand-primary tracking-tight">
-                  {stat.value}
-                </span>
-                <span className="font-sans text-xs sm:text-sm text-brand-muted font-medium mt-1">
+              <div key={idx} className="text-center group">
+                <div className="inline-flex flex-col items-center justify-center w-36 h-36 rounded-2xl bg-white border border-brand-primary/10 shadow-md shadow-brand-primary/5 group-hover:shadow-brand-primary/15 group-hover:border-brand-primary/30 group-hover:-translate-y-1 transition-all duration-300 mx-auto mb-4">
+                  <span className="text-3xl sm:text-4xl font-extrabold gradient-text leading-none font-jakarta">
+                    <Counter target={stat.value} suffix={stat.suffix} />
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm font-semibold text-brand-dark/60 tracking-wider uppercase font-jakarta">
                   {stat.label}
-                </span>
+                </p>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* LIVE MOCK DIRECTORY PREVIEW */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="font-jakarta text-3xl font-bold tracking-tight text-brand-dark sm:text-4xl">
-              Startups Launching in the Open
-            </h2>
-            <p className="font-sans text-base text-brand-muted mt-3">
-              Explore real-time data from high-growth SaaS, FinTech, and AI platforms building right here in Dhaka.
+      {/* VALUE PROPOSITIONS */}
+      <section className="py-24 bg-[#F8FAFC] relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="text-sm font-semibold text-brand-primary uppercase tracking-widest mb-3 font-jakarta">
+              Why Dhaka Founders?
             </p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-dark mb-4 font-jakarta">
+              Everything you need to <span className="gradient-text">scale your startup</span>
+            </h2>
+            <p className="text-brand-muted text-base leading-relaxed font-sans">
+              From funding support and founder resources to direct connections with investors — we give you the tools to build in the open.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Box 1 */}
+            <div className="bg-white rounded-2xl p-8 border border-brand-border/60 shadow-sm group hover:-translate-y-1 transition-transform duration-300">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-brand-primary/10 group-hover:scale-105 transition-transform duration-300">
+                <Users className="w-7 h-7 text-brand-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-brand-dark mb-3 font-jakarta">Build Your Network</h3>
+              <p className="text-brand-muted text-sm leading-relaxed font-sans">
+                Connect with like-minded founders, mentors, and investors who are actively shaping the Bangladeshi startup landscape.
+              </p>
+              <div className="mt-6 h-0.5 w-12 bg-brand-primary rounded-full group-hover:w-24 transition-all duration-300" />
+            </div>
+
+            {/* Box 2 */}
+            <div className="bg-white rounded-2xl p-8 border border-brand-border/60 shadow-sm group hover:-translate-y-1 transition-transform duration-300">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-emerald-500/10 group-hover:scale-105 transition-transform duration-300">
+                <TrendingUp className="w-7 h-7 text-brand-secondary" />
+              </div>
+              <h3 className="text-xl font-bold text-brand-dark mb-3 font-jakarta">Access Funding</h3>
+              <p className="text-brand-muted text-sm leading-relaxed font-sans">
+                Get discovered by top local and regional investors. Showcase your startup and unlock growth capital.
+              </p>
+              <div className="mt-6 h-0.5 w-12 bg-brand-secondary rounded-full group-hover:w-24 transition-all duration-300" />
+            </div>
+
+            {/* Box 3 */}
+            <div className="bg-white rounded-2xl p-8 border border-brand-border/60 shadow-sm group hover:-translate-y-1 transition-transform duration-300">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-amber-500/10 group-hover:scale-105 transition-transform duration-300">
+                <Zap className="w-7 h-7 text-amber-600" />
+              </div>
+              <h3 className="text-xl font-bold text-brand-dark mb-3 font-jakarta">Scale Faster</h3>
+              <p className="text-brand-muted text-sm leading-relaxed font-sans">
+                Leverage founder resources, workshops, and community support to accelerate your startup's growth trajectory.
+              </p>
+              <div className="mt-6 h-0.5 w-12 bg-amber-500 rounded-full group-hover:w-24 transition-all duration-300" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* DATABASE CONNECTION SUCCESS BAR */}
+      <div className="flex justify-center py-4 bg-white border-y border-brand-border/40 relative z-10 font-sans text-xs font-semibold">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm">
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          <span>Supabase connection successful</span>
+        </div>
+      </div>
+
+      {/* FEATURED WATCHLIST */}
+      <section className="py-24 bg-white relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+            <div>
+              <p className="text-sm font-semibold text-brand-primary uppercase tracking-widest mb-2 font-jakarta">
+                Featured Startups
+              </p>
+              <h2 className="text-3xl font-extrabold text-brand-dark font-jakarta">
+                Startups to Watch in 2026
+              </h2>
+            </div>
+            <Link
+              href="/directory"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:text-brand-primary-hover transition-colors font-jakarta"
+            >
+              View all startups
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {featuredStartups.map((startup, idx) => (
-              <div key={idx} className="glassmorphism-card rounded-2xl p-6 relative flex flex-col justify-between">
+              <div key={idx} className="glassmorphism-card rounded-2xl p-6 relative flex flex-col justify-between bg-white text-left">
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-lg ${startup.badgeColor}`}>
@@ -147,7 +329,7 @@ export default function Home() {
                     <span className="text-brand-dark font-bold mt-0.5 block">{startup.funding}</span>
                   </div>
                   <Link
-                    href="/directory"
+                    href={`/directory?id=${idx + 1}`}
                     className="inline-flex items-center justify-center p-2 rounded-lg bg-brand-primary/5 text-brand-primary hover:bg-brand-primary hover:text-white transition-all group"
                   >
                     <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -156,85 +338,38 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div className="mt-8 text-center">
+      {/* SECONDARY CTA BANNER */}
+      <section className="py-20 bg-brand-dark relative z-10">
+        <div className="max-w-3xl mx-auto px-4 text-center space-y-6">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white font-jakarta leading-tight">
+            Support each other's growth. <span className="text-brand-primary">Together.</span>
+          </h2>
+          <p className="text-white/60 text-base leading-relaxed font-sans max-w-xl mx-auto">
+            Join a vibrant community of founders who believe the best startups are built with the support of a strong local ecosystem.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link
+              id="bottom-explore-cta"
               href="/directory"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-brand-primary hover:text-brand-primary-hover group"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold text-base transition-all duration-200 shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/40 hover:scale-105 inline-flex items-center justify-center gap-2 font-jakarta"
             >
-              View all directory startups
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              Explore Directory
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              id="bottom-join-cta"
+              href="/dashboard"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl border-2 border-white/20 hover:border-white/40 text-white font-semibold text-base transition-all duration-200 hover:bg-white/5 font-jakarta"
+            >
+              Join as Founder
             </Link>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* VALUE PROPOSITIONS */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-brand-border/40">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div className="space-y-4">
-              <div className="bg-brand-primary/10 w-12 h-12 rounded-xl flex items-center justify-center text-brand-primary shadow-sm">
-                <Users className="h-6 w-6" />
-              </div>
-              <h3 className="font-jakarta font-bold text-xl text-brand-dark">Vibrant Community</h3>
-              <p className="font-sans text-sm text-brand-muted leading-relaxed">
-                Connect with peer founders, tech builders, and operations specialists. Share logs, launch products, and build in public together.
-              </p>
-            </div>
-            <div className="space-y-4">
-              <div className="bg-brand-secondary/10 w-12 h-12 rounded-xl flex items-center justify-center text-brand-secondary shadow-sm">
-                <Zap className="h-6 w-6" />
-              </div>
-              <h3 className="font-jakarta font-bold text-xl text-brand-dark">Access Funding</h3>
-              <p className="font-sans text-sm text-brand-muted leading-relaxed">
-                Direct matching with verified local angel networks and regional venture capital funds focusing on emerging SaaS opportunities in South Asia.
-              </p>
-            </div>
-            <div className="space-y-4">
-              <div className="bg-purple-500/10 w-12 h-12 rounded-xl flex items-center justify-center text-purple-600 shadow-sm">
-                <ShieldCheck className="h-6 w-6" />
-              </div>
-              <h3 className="font-jakarta font-bold text-xl text-brand-dark">Verified Data</h3>
-              <p className="font-sans text-sm text-brand-muted leading-relaxed">
-                Skip the noise. Our profiles carry verification metrics on growth, active headcount, and corporate registry, ensuring investor-ready visibility.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* CALL TO ACTION */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="bg-brand-dark text-white rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-xl">
-            {/* CTA Graphics */}
-            <div className="absolute right-0 bottom-0 w-80 h-80 rounded-full bg-brand-primary/15 blur-[80px] pointer-events-none" />
-            <div className="absolute left-1/3 top-0 w-40 h-40 rounded-full bg-brand-secondary/15 blur-[60px] pointer-events-none" />
-            
-            <div className="relative z-10 max-w-2xl space-y-6">
-              <h2 className="font-jakarta text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Ready to Accelerate Your Startup?
-              </h2>
-              <p className="font-sans text-slate-300 leading-relaxed">
-                Register your startup profile today to make it visible to local/global investors, find technical partners, and support each other's scaling.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-2">
-                <Link
-                  href="/dashboard?register=true"
-                  className="inline-flex items-center justify-center gap-2 bg-brand-secondary hover:bg-brand-secondary-hover text-brand-dark text-sm font-bold px-6 py-3.5 rounded-xl shadow-md transition-all active:scale-98"
-                >
-                  Create Founder Profile
-                  <ArrowRight className="h-4.5 w-4.5" />
-                </Link>
-                <Link
-                  href="/directory"
-                  className="inline-flex items-center justify-center bg-white/10 hover:bg-white/15 border border-white/10 text-white text-sm font-semibold px-6 py-3.5 rounded-xl transition-all active:scale-98"
-                >
-                  View Startups
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-      </div>
     </div>
   );
 }

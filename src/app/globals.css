@@ -4,11 +4,11 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-jakarta: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   
-  --color-brand-primary: #2563EB;
-  --color-brand-primary-hover: #1D4ED8;
+  --color-brand-primary: #2A81C7;
+  --color-brand-primary-hover: #1e6aab;
   --color-brand-secondary: #10B981;
   --color-brand-secondary-hover: #059669;
-  --color-brand-dark: #0F172A;
+  --color-brand-dark: #1F2532;
   --color-brand-light: #F8FAFC;
   --color-brand-muted: #64748B;
   --color-brand-border: #E2E8F0;
@@ -29,7 +29,7 @@
 
 :root {
   --background: #F8FAFC;
-  --foreground: #0F172A;
+  --foreground: #1F2532;
 }
 
 body {
@@ -37,6 +37,10 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-jakarta);
 }
 
 /* Custom premium aesthetic utilities */
@@ -64,6 +68,12 @@ body {
 }
 
 .text-gradient {
+  background: linear-gradient(135deg, #2563EB 0%, #10B981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text {
   background: linear-gradient(135deg, #2563EB 0%, #10B981 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

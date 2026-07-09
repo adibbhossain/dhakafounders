@@ -10,11 +10,11 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: "#2563EB",
-          primaryHover: "#1D4ED8",
+          primary: "#2A81C7",
+          primaryHover: "#1e6aab",
           secondary: "#10B981",
           secondaryHover: "#059669",
-          dark: "#0F172A",
+          dark: "#1F2532",
           light: "#F8FAFC",
           muted: "#64748B",
           border: "#E2E8F0",

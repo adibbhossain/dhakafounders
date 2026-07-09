@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Rocket, Heart, Mail } from 'lucide-react';
+import { Zap, Heart, MapPin } from 'lucide-react';
 
 const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -27,101 +27,137 @@ const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-brand-dark text-white border-t border-white/5 relative z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8">
+    <footer className="w-full bg-[#1F2532] text-white relative z-10 border-t border-[#2A81C7]/10">
+      
+      {/* Onboarding Footer CTA Banner */}
+      <div className="border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-1 font-jakarta">
+              Ready to grow with Bangladesh's best?
+            </h3>
+            <p className="text-white/60 text-sm font-sans">
+              Join 500+ founders already building in the open.
+            </p>
+          </div>
+          <Link
+            href="/directory"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold text-sm transition-all duration-200 shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/30 hover:scale-105 shrink-0"
+          >
+            <Zap className="h-4 w-4 fill-white/10" />
+            Explore the Directory
+          </Link>
+        </div>
+      </div>
+
+      {/* Main Footer Links */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           
-          {/* Brand Vision */}
-          <div className="md:col-span-2 space-y-6">
-            <Link href="/" className="flex items-center gap-2 group w-fit">
-              <div className="bg-brand-primary/20 p-2 rounded-xl text-brand-primary">
-                <Rocket className="h-5 w-5 fill-brand-primary/20" />
+          {/* Logo column */}
+          <div className="lg:col-span-2 space-y-4">
+            <Link href="/" className="flex items-center gap-2 mb-4 group w-fit">
+              <div className="bg-gradient-to-br from-brand-primary to-blue-500 p-2 rounded-lg text-white group-hover:scale-105 transition-transform duration-200">
+                <Zap className="h-4 w-4 fill-white text-white" />
               </div>
-              <span className="font-jakarta text-xl font-bold tracking-tight text-white">
-                Dhaka<span className="text-brand-secondary font-extrabold">Founders</span>
+              <span className="font-jakarta text-lg font-bold">
+                Dhaka<span className="text-brand-primary">Founders</span>
               </span>
             </Link>
-            <p className="text-slate-400 text-sm max-w-sm font-sans leading-relaxed">
-              Empowering Bangladesh’s tech future. We build the infrastructure to connect, build, and scale local SaaS startups, uniting founders, builders, and investors in a vibrant community.
+            <p className="text-white/55 text-sm leading-relaxed max-w-xs mb-6 font-sans">
+              Dhaka Founders is the premier directory connecting founders, investors, and builders across Bangladesh's tech ecosystem.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-colors" aria-label="Twitter">
-                <TwitterIcon className="h-4 w-4" />
+            <div className="flex items-center gap-1.5 text-white/40 text-xs mb-5 font-sans">
+              <MapPin className="h-3.5 w-3.5" />
+              <span>Dhaka, Bangladesh 🇧🇩</span>
+            </div>
+            
+            {/* Social handles */}
+            <div className="flex items-center gap-3">
+              <a href="#" aria-label="Twitter" className="w-9 h-9 rounded-lg bg-white/5 hover:bg-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-115">
+                <TwitterIcon className="w-4 h-4 text-white/70 hover:text-white" />
               </a>
-              <a href="#" className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-colors" aria-label="LinkedIn">
-                <LinkedinIcon className="h-4 w-4" />
+              <a href="#" aria-label="LinkedIn" className="w-9 h-9 rounded-lg bg-white/5 hover:bg-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-115">
+                <LinkedinIcon className="w-4 h-4 text-white/70 hover:text-white" />
               </a>
-              <a href="#" className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-colors" aria-label="GitHub">
-                <GithubIcon className="h-4 w-4" />
+              <a href="#" aria-label="GitHub" className="w-9 h-9 rounded-lg bg-white/5 hover:bg-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-115">
+                <GithubIcon className="w-4 h-4 text-white/70 hover:text-white" />
               </a>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Links Column 2 */}
           <div>
-            <h3 className="font-jakarta font-semibold text-sm tracking-wider uppercase text-slate-300 mb-4">Ecosystem</h3>
-            <ul className="space-y-2.5">
+            <h4 className="text-white font-semibold text-sm mb-4 font-jakarta">Platform</h4>
+            <ul className="space-y-3 font-sans">
               <li>
-                <Link href="/directory" className="text-slate-400 text-sm hover:text-white transition-colors">
-                  Startup Directory
+                <Link href="/directory" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                  Directory
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard" className="text-slate-400 text-sm hover:text-white transition-colors">
-                  Founder Dashboard
+                <Link href="/dashboard" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                  Dashboard
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-slate-400 text-sm hover:text-white transition-colors">
-                  Access Funding
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-slate-400 text-sm hover:text-white transition-colors">
-                  Growth Programs
+                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                  For Investors
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Newsletter / CTA */}
-          <div className="space-y-4">
-            <h3 className="font-jakarta font-semibold text-sm tracking-wider uppercase text-slate-300">Join the Newsletter</h3>
-            <p className="text-slate-400 text-xs leading-relaxed">
-              Get weekly updates on funding rounds, launch events, and startup insights. Support each other's growth.
-            </p>
-            <form className="flex flex-col sm:flex-row gap-2 mt-2" onSubmit={(e) => e.preventDefault()}>
-              <div className="relative flex-1">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
-                  required
-                />
-                <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
-              </div>
-              <button
-                type="submit"
-                className="bg-brand-primary hover:bg-brand-primary-hover text-white text-xs font-semibold px-4 py-2.5 rounded-xl active:scale-98 transition-all whitespace-nowrap shadow-md shadow-brand-primary/10"
-              >
-                Subscribe
-              </button>
-            </form>
+          {/* Links Column 3 */}
+          <div>
+            <h4 className="text-white font-semibold text-sm mb-4 font-jakarta">Community</h4>
+            <ul className="space-y-3 font-sans">
+              <li>
+                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                  Events
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Links Column 4 */}
+          <div>
+            <h4 className="text-white font-semibold text-sm mb-4 font-jakarta">Legal</h4>
+            <ul className="space-y-3 font-sans">
+              <li>
+                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                  Terms of Service
+                </a>
+              </li>
+            </ul>
           </div>
 
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-slate-500 text-xs font-sans">
-            &copy; {new Date().getFullYear()} Dhaka Founders. All rights reserved.
-          </p>
-          <p className="text-slate-500 text-xs flex items-center gap-1 font-sans">
-            Made with <Heart className="h-3 w-3 text-red-500 fill-red-500 animate-pulse" /> for the Bangladesh Startup Ecosystem.
+        {/* Bottom bar */}
+        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-white/35 text-xs font-sans">
+          <p>&copy; {new Date().getFullYear()} Dhaka Founders. All rights reserved.</p>
+          <p className="flex items-center gap-1">
+            Built with <Heart className="h-3 w-3 text-red-500 fill-red-500" /> for Bangladesh's startup community
           </p>
         </div>
-
       </div>
+
     </footer>
   );
 }

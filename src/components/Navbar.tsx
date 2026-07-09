@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Rocket, Menu, X, ArrowRight, Layers } from 'lucide-react';
+import { Zap, Menu, X, ArrowRight } from 'lucide-react';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,54 +18,51 @@ export default function Navbar() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <nav className="sticky top-0 z-50 w-full glassmorphism border-b border-brand-border/40 backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white/75 border-b border-brand-border/40 backdrop-blur-md transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo Section */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="bg-brand-primary/10 p-2 rounded-xl text-brand-primary group-hover:scale-110 transition-transform duration-300">
-                <Rocket className="h-5 w-5 fill-brand-primary/10" />
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="bg-gradient-to-br from-brand-primary to-blue-500 p-2 rounded-xl text-white group-hover:scale-105 transition-all duration-300 shadow-md shadow-brand-primary/20">
+                <Zap className="h-5 w-5 fill-white text-white" />
               </div>
-              <span className="font-jakarta text-xl font-bold tracking-tight text-brand-dark flex items-center gap-1.5">
-                Dhaka<span className="text-gradient font-extrabold">Founders</span>
+              <span className="font-jakarta text-xl font-extrabold tracking-tight text-brand-dark flex items-center">
+                Dhaka<span className="text-brand-primary ml-0.5 group-hover:text-brand-primary-hover transition-colors">Founders</span>
               </span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-2">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`font-sans text-sm font-medium transition-colors duration-200 relative py-2 ${
+                className={`font-sans text-sm px-4 py-2 rounded-lg transition-all duration-200 ${
                   isActive(link.href)
-                    ? 'text-brand-primary'
-                    : 'text-brand-muted hover:text-brand-dark'
+                    ? 'bg-brand-primary/10 text-brand-primary font-semibold'
+                    : 'text-brand-dark/70 hover:text-brand-dark hover:bg-brand-dark/5 font-medium'
                 }`}
               >
                 {link.name}
-                {isActive(link.href) && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full animate-fade-in" />
-                )}
               </Link>
             ))}
           </div>
 
           {/* Call to Actions (Desktop) */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-5">
             <Link
               href="/dashboard"
-              className="text-sm font-medium text-brand-muted hover:text-brand-dark transition-colors"
+              className="text-sm font-medium text-brand-dark/70 hover:text-brand-dark transition-colors duration-200"
             >
               Sign In
             </Link>
             <Link
-              href="/directory?submit=true"
-              className="inline-flex items-center gap-2 bg-brand-primary text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-brand-primary-hover shadow-md hover:shadow-lg hover:shadow-brand-primary/10 active:scale-98 transition-all duration-200"
+              href="/dashboard?register=true"
+              className="inline-flex items-center gap-2 bg-brand-primary text-white text-sm font-semibold px-4.5 py-2 rounded-xl hover:bg-brand-primary-hover hover:scale-[1.02] shadow-md shadow-brand-primary/10 active:scale-[0.98] transition-all duration-200"
             >
-              Submit Startup
+              Join Now
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -86,17 +83,17 @@ export default function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {isOpen && (
-        <div className="md:hidden glassmorphism border-t border-brand-border/40 animate-slide-up">
+        <div className="md:hidden bg-white/95 border-t border-brand-border/40 backdrop-blur-lg animate-slide-up">
           <div className="px-2 pt-2 pb-4 space-y-1 sm:px-3">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2.5 rounded-xl text-base font-medium transition-colors ${
+                className={`block px-3 py-2 rounded-xl text-base transition-colors ${
                   isActive(link.href)
-                    ? 'bg-brand-primary/5 text-brand-primary font-semibold'
-                    : 'text-brand-muted hover:text-brand-dark hover:bg-black/5'
+                    ? 'bg-brand-primary/10 text-brand-primary font-semibold'
+                    : 'text-brand-dark/70 hover:text-brand-dark hover:bg-brand-dark/5 font-medium'
                 }`}
               >
                 {link.name}
@@ -106,22 +103,22 @@ export default function Navbar() {
               <Link
                 href="/dashboard"
                 onClick={() => setIsOpen(false)}
-                className="w-full text-center py-2.5 rounded-xl text-base font-medium text-brand-muted hover:text-brand-dark hover:bg-black/5 transition-all"
+                className="w-full text-center py-2.5 rounded-xl text-base font-medium text-brand-dark/70 hover:text-brand-dark hover:bg-brand-dark/5 transition-all"
               >
                 Sign In
               </Link>
               <Link
-                href="/directory?submit=true"
+                href="/dashboard?register=true"
                 onClick={() => setIsOpen(false)}
-                className="w-full inline-flex items-center justify-center gap-2 bg-brand-primary text-white text-base font-semibold py-2.5 rounded-xl hover:bg-brand-primary-hover active:scale-98 transition-all duration-200"
+                className="w-full inline-flex items-center justify-center gap-2 bg-brand-primary text-white text-base font-semibold py-2.5 rounded-xl hover:bg-brand-primary-hover active:scale-[0.98] transition-all duration-200"
               >
-                Submit Startup
+                Join Now
                 <ArrowRight className="h-4.5 w-4.5" />
               </Link>
             </div>
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }
