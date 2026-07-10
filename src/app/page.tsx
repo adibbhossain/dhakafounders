@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { createClient } from '@/utils/supabase/client';
 import { ArrowRight, ChevronDown, Users, TrendingUp, Zap, CheckCircle2, ArrowUpRight } from 'lucide-react';
 
 const Counter = ({ target, suffix = '' }: { target: number; suffix?: string }) => {
@@ -32,6 +33,27 @@ const Counter = ({ target, suffix = '' }: { target: number; suffix?: string }) =
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const testSupabaseConnection = async () => {
+      const supabase = createClient();
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Supabase connection verification failed:', error.message);
+          setIsConnected(false);
+        } else {
+          console.log('Supabase connection verified successfully! Session:', data.session);
+          setIsConnected(true);
+        }
+      } catch (err) {
+        console.error('Unexpected error verifying Supabase connection:', err);
+        setIsConnected(false);
+      }
+    };
+    testSupabaseConnection();
+  }, []);
 
   const headlines = [
     {
@@ -270,10 +292,24 @@ export default function Home() {
 
       {/* DATABASE CONNECTION SUCCESS BAR */}
       <div className="flex justify-center py-4 bg-white border-y border-brand-border/40 relative z-10 font-sans text-xs font-semibold">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm">
-          <CheckCircle2 className="w-3.5 h-3.5" />
-          <span>Supabase connection successful</span>
-        </div>
+        {isConnected === null && (
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-blue-50 border-blue-200 text-blue-700 shadow-sm animate-pulse">
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
+            <span>Verifying Supabase connection...</span>
+          </div>
+        )}
+        {isConnected === true && (
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Supabase connection successful</span>
+          </div>
+        )}
+        {isConnected === false && (
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-rose-50 border-rose-200 text-rose-700 shadow-sm">
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+            <span>Supabase connection failed</span>
+          </div>
+        )}
       </div>
 
       {/* FEATURED WATCHLIST */}

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Zap, Menu, X, ArrowRight } from 'lucide-react';
+import { SignInButton, SignUpButton, Show, UserButton } from '@clerk/nextjs';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,19 +53,22 @@ export default function Navbar() {
 
           {/* Call to Actions (Desktop) */}
           <div className="hidden md:flex items-center gap-5">
-            <Link
-              href="/dashboard"
-              className="text-sm font-medium text-brand-dark/70 hover:text-brand-dark transition-colors duration-200"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/dashboard?register=true"
-              className="inline-flex items-center gap-2 bg-brand-primary text-white text-sm font-semibold px-4.5 py-2 rounded-xl hover:bg-brand-primary-hover hover:scale-[1.02] shadow-md shadow-brand-primary/10 active:scale-[0.98] transition-all duration-200"
-            >
-              Join Now
-              <ArrowRight className="h-4 w-4" />
-            </Link>
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button className="text-sm font-medium text-brand-dark/70 hover:text-brand-dark transition-colors duration-200 cursor-pointer">
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="inline-flex items-center gap-2 bg-brand-primary text-white text-sm font-semibold px-4.5 py-2 rounded-xl hover:bg-brand-primary-hover hover:scale-[1.02] shadow-md shadow-brand-primary/10 active:scale-[0.98] transition-all duration-200 cursor-pointer">
+                  Join Now
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
           </div>
 
           {/* Mobile Menu Button */}
@@ -100,21 +104,24 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="pt-4 pb-2 border-t border-brand-border/40 px-3 flex flex-col gap-3">
-              <Link
-                href="/dashboard"
-                onClick={() => setIsOpen(false)}
-                className="w-full text-center py-2.5 rounded-xl text-base font-medium text-brand-dark/70 hover:text-brand-dark hover:bg-brand-dark/5 transition-all"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/dashboard?register=true"
-                onClick={() => setIsOpen(false)}
-                className="w-full inline-flex items-center justify-center gap-2 bg-brand-primary text-white text-base font-semibold py-2.5 rounded-xl hover:bg-brand-primary-hover active:scale-[0.98] transition-all duration-200"
-              >
-                Join Now
-                <ArrowRight className="h-4.5 w-4.5" />
-              </Link>
+              <Show when="signed-out">
+                <SignInButton mode="modal">
+                  <button className="w-full text-center py-2.5 rounded-xl text-base font-medium text-brand-dark/70 hover:text-brand-dark hover:bg-brand-dark/5 transition-all cursor-pointer">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="w-full inline-flex items-center justify-center gap-2 bg-brand-primary text-white text-base font-semibold py-2.5 rounded-xl hover:bg-brand-primary-hover active:scale-[0.98] transition-all duration-200 cursor-pointer">
+                    Join Now
+                    <ArrowRight className="h-4.5 w-4.5" />
+                  </button>
+                </SignUpButton>
+              </Show>
+              <Show when="signed-in">
+                <div className="flex justify-center py-1">
+                  <UserButton />
+                </div>
+              </Show>
             </div>
           </div>
         </div>

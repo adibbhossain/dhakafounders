@@ -1,3 +1,4 @@
+import {ClerkProvider} from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
@@ -33,13 +34,14 @@ export default function RootLayout({
       className={`${plusJakartaSans.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-brand-light text-brand-dark font-sans selection:bg-brand-primary/10 selection:text-brand-primary">
-        <Navbar />
-        <main className="flex-1 flex flex-col w-full pt-16">
+        <ClerkProvider>
+          <Navbar />
+          <main className="flex-1 flex flex-col w-full pt-16">
           {children}
-        </main>
-        <Footer />
+          </main>
+          <Footer />
+        </ClerkProvider>
       </body>
     </html>
   );
 }
-
