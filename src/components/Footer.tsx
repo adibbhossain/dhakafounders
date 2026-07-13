@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Zap, Heart, MapPin } from 'lucide-react';
 
 const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -26,6 +27,7 @@ const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 export default function Footer() {
+  const pathname = usePathname();
   return (
     <footer className="w-full bg-[#1F2532] text-white relative z-10 border-t border-[#2A81C7]/10">
 
@@ -56,7 +58,16 @@ export default function Footer() {
 
           {/* Logo column */}
           <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-2 mb-4 group w-fit">
+            <Link
+              href="/"
+              onClick={(e) => {
+                if (pathname === '/') {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+              className="flex items-center gap-2 mb-4 group w-fit"
+            >
               <div className="bg-gradient-to-br from-brand-primary to-blue-500 p-2 rounded-lg text-white group-hover:scale-105 transition-transform duration-200">
                 <Zap className="h-4 w-4 fill-white text-white" />
               </div>

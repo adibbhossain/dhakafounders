@@ -24,7 +24,16 @@ export default function Navbar() {
         <div className="flex justify-between h-16 items-center">
           {/* Logo Section */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="flex items-center gap-2.5 group">
+            <Link
+              href="/"
+              onClick={(e) => {
+                if (pathname === '/') {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+              className="flex items-center gap-2.5 group"
+            >
               <div className="bg-gradient-to-br from-brand-primary to-blue-500 p-2 rounded-xl text-white group-hover:scale-105 transition-all duration-300 shadow-md shadow-brand-primary/20">
                 <Zap className="h-5 w-5 fill-white text-white" />
               </div>
