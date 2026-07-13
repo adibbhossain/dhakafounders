@@ -4,9 +4,9 @@ import React from 'react';
 import Link from 'next/link';
 import { Zap, Heart, MapPin } from 'lucide-react';
 
-const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
   </svg>
 );
 
@@ -28,7 +28,7 @@ const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export default function Footer() {
   return (
     <footer className="w-full bg-[#1F2532] text-white relative z-10 border-t border-[#2A81C7]/10">
-      
+
       {/* Onboarding Footer CTA Banner */}
       <div className="border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -53,7 +53,7 @@ export default function Footer() {
       {/* Main Footer Links */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-          
+
           {/* Logo column */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2 mb-4 group w-fit">
@@ -69,18 +69,18 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-1.5 text-white/40 text-xs mb-5 font-sans">
               <MapPin className="h-3.5 w-3.5" />
-              <span>Dhaka, Bangladesh 🇧🇩</span>
+              <span>Dhaka, Bangladesh</span>
             </div>
-            
+
             {/* Social handles */}
             <div className="flex items-center gap-3">
-              <a href="#" aria-label="Twitter" className="w-9 h-9 rounded-lg bg-white/5 hover:bg-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-115">
-                <TwitterIcon className="w-4 h-4 text-white/70 hover:text-white" />
+              <a href="https://x.com/adibbhai" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="w-9 h-9 rounded-lg bg-white/5 hover:bg-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-115">
+                <XIcon className="w-4 h-4 text-white/70 hover:text-white" />
               </a>
-              <a href="#" aria-label="LinkedIn" className="w-9 h-9 rounded-lg bg-white/5 hover:bg-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-115">
+              <a href="https://www.linkedin.com/in/adiibh/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-9 h-9 rounded-lg bg-white/5 hover:bg-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-115">
                 <LinkedinIcon className="w-4 h-4 text-white/70 hover:text-white" />
               </a>
-              <a href="#" aria-label="GitHub" className="w-9 h-9 rounded-lg bg-white/5 hover:bg-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-115">
+              <a href="https://github.com/adibbhossain" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="w-9 h-9 rounded-lg bg-white/5 hover:bg-brand-primary flex items-center justify-center transition-all duration-200 hover:scale-115">
                 <GithubIcon className="w-4 h-4 text-white/70 hover:text-white" />
               </a>
             </div>
@@ -113,19 +113,19 @@ export default function Footer() {
             <h4 className="text-white font-semibold text-sm mb-4 font-jakarta">Community</h4>
             <ul className="space-y-3 font-sans">
               <li>
-                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                <Link href="/about" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                <Link href="/blog" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
                   Blog
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                <Link href="/events" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
                   Events
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -135,14 +135,14 @@ export default function Footer() {
             <h4 className="text-white font-semibold text-sm mb-4 font-jakarta">Legal</h4>
             <ul className="space-y-3 font-sans">
               <li>
-                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                <Link href="/privacy" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
+                <Link href="/terms" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-brand-primary text-sm transition-colors duration-200">
                   Terms of Service
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

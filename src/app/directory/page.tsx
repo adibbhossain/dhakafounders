@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, MapPin, Users, Globe, ExternalLink, ArrowRight, CheckCircle2, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { createClient } from '@/utils/supabase/client';
+import { useAuth } from '@clerk/nextjs';
 
 interface Startup {
   id: string;
@@ -99,18 +101,143 @@ const mockStartups: Startup[] = [
 ];
 
 export default function Directory() {
+  const { userId } = useAuth();
+  const [startups, setStartups] = useState<Startup[]>(mockStartups);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStage, setSelectedStage] = useState('All');
-  const [connectedIds, setConnectedIds] = useState<string[]>([]);
+  const [connections, setConnections] = useState<{ profileId: string; status: string }[]>([]);
   const [showToast, setShowToast] = useState(false);
   const [toastName, setToastName] = useState('');
+  const [currentUserProfile, setCurrentUserProfile] = useState<any>(null);
+
+  // Fetch logged in user's profile on client side
+  useEffect(() => {
+    if (!userId) return;
+    const fetchCurrentUserProfile = async () => {
+      const supabase = createClient();
+      try {
+        const { data } = await supabase
+          .from('company_profile')
+          .select('id, company_name')
+          .eq('clerk_auth_key', userId)
+          .maybeSingle();
+        if (data) {
+          setCurrentUserProfile(data);
+        }
+      } catch (err) {
+        console.error('Error fetching current user profile:', err);
+      }
+    };
+    fetchCurrentUserProfile();
+  }, [userId]);
+
+  // Fetch connection requests (both sent by user and received by user that are accepted)
+  useEffect(() => {
+    if (!currentUserProfile) return;
+    const fetchSentRequests = async () => {
+      const supabase = createClient();
+      try {
+        // Fetch requests sent by the current user
+        const { data: sentData } = await supabase
+          .from('connection_request')
+          .select('receiver_profile_id, status')
+          .eq('sender_profile_id', currentUserProfile.id);
+
+        // Fetch requests received by the current user that are accepted
+        const { data: receivedData } = await supabase
+          .from('connection_request')
+          .select('sender_profile_id, status')
+          .eq('receiver_profile_id', currentUserProfile.id)
+          .eq('status', 'accepted');
+
+        const list: { profileId: string; status: string }[] = [];
+        if (sentData) {
+          sentData.forEach((r: any) => {
+            list.push({ profileId: r.receiver_profile_id, status: r.status });
+          });
+        }
+        if (receivedData) {
+          receivedData.forEach((r: any) => {
+            list.push({ profileId: r.sender_profile_id, status: r.status });
+          });
+        }
+        setConnections(list);
+      } catch (err) {
+        console.error('Error fetching sent connection requests:', err);
+      }
+    };
+    fetchSentRequests();
+  }, [currentUserProfile]);
+
+  useEffect(() => {
+    const fetchSupabaseStartups = async () => {
+      const supabase = createClient();
+      try {
+        const { data, error } = await supabase
+          .from('company_profile')
+          .select('*');
+
+        if (error) {
+          console.error('Error fetching startups from Supabase:', error.message);
+          return;
+        }
+
+        if (data && data.length > 0) {
+          const dbStartups: Startup[] = data.map((item) => {
+            // Assign gradient based on category or fallback
+            let gradient = 'from-blue-600 to-indigo-600';
+            if (item.category === 'HealthTech / AI' || item.category === 'HealthTech') {
+              gradient = 'from-emerald-500 to-teal-500';
+            } else if (item.category === 'B2B E-commerce' || item.category === 'E-commerce') {
+              gradient = 'from-purple-600 to-pink-600';
+            } else if (item.category === 'FinTech') {
+              gradient = 'from-rose-500 to-red-600';
+            } else if (item.category === 'EdTech') {
+              gradient = 'from-cyan-500 to-blue-500';
+            } else if (item.category === 'Logistics / Supply Chain' || item.category === 'SaaS / ERP') {
+              gradient = 'from-blue-600 to-indigo-600';
+            } else {
+              gradient = 'from-slate-600 to-slate-800';
+            }
+
+            return {
+              id: item.id,
+              name: item.company_name,
+              category: item.category || 'Other',
+              stage: item.funding_stage || 'Pre-Seed',
+              funding: item.funding_stage || 'Bootstrapped',
+              pitch: item.description || '',
+              location: item.hq_location || 'Dhaka',
+              teamSize: parseInt(item.team_size) || 1,
+              founder: item.founder_name,
+              website: item.website_url || '#',
+              logoGradient: gradient,
+            };
+          });
+
+          setStartups((prev) => {
+            const combined = [...prev];
+            dbStartups.forEach((dbItem) => {
+              if (!combined.some((item) => item.id === dbItem.id)) {
+                combined.unshift(dbItem);
+              }
+            });
+            return combined;
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load dynamic database profiles:', err);
+      }
+    };
+    fetchSupabaseStartups();
+  }, []);
 
   const categories = ['All', 'SaaS / ERP', 'HealthTech', 'E-commerce', 'Mobility', 'EdTech', 'FinTech'];
   const stages = ['All', 'Bootstrapped', 'Pre-Seed', 'Seed', 'Series A'];
 
   const filteredStartups = useMemo(() => {
-    return mockStartups.filter((startup) => {
+    return startups.filter((startup) => {
       const matchesSearch =
         startup.name.toLowerCase().includes(search.toLowerCase()) ||
         startup.pitch.toLowerCase().includes(search.toLowerCase()) ||
@@ -126,16 +253,52 @@ export default function Directory() {
 
       return matchesSearch && matchesCategory && matchesStage;
     });
-  }, [search, selectedCategory, selectedStage]);
+  }, [startups, search, selectedCategory, selectedStage]);
 
-  const handleConnect = (id: string, name: string) => {
-    if (connectedIds.includes(id)) return;
-    setConnectedIds([...connectedIds, id]);
-    setToastName(name);
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-    }, 3000);
+  const handleConnect = async (id: string, name: string) => {
+    if (connections.some((c) => c.profileId === id)) return;
+    if (!userId) {
+      alert('Please sign in or create a profile to request connections!');
+      return;
+    }
+    if (!currentUserProfile) {
+      alert('Please set up your company profile in the Dashboard first to connect with other startups!');
+      return;
+    }
+    if (currentUserProfile.id === id) {
+      alert('You cannot request connection with your own company!');
+      return;
+    }
+
+    const supabase = createClient();
+    try {
+      const { error } = await supabase
+        .from('connection_request')
+        .insert([
+          {
+            sender_profile_id: currentUserProfile.id,
+            receiver_profile_id: id,
+            status: 'pending',
+            message: `Hey ${name}, let's connect and explore synergy!`
+          }
+        ]);
+
+      if (error) {
+        console.error('Error sending connection request:', error.message);
+        alert('Failed to send connection request: ' + error.message);
+        return;
+      }
+
+      setConnections([...connections, { profileId: id, status: 'pending' }]);
+      setToastName(name);
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+    } catch (err) {
+      console.error('Unexpected error sending connection request:', err);
+      alert('Failed to send connection request due to an unexpected error.');
+    }
   };
 
   return (
@@ -173,7 +336,7 @@ export default function Directory() {
                 className="w-full bg-white border border-brand-border/80 rounded-xl py-3 pl-11 pr-4 text-sm text-brand-dark focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
               />
             </div>
-            
+
             {/* Mobile Filters Indicator */}
             <div className="flex items-center gap-2 text-brand-muted text-sm px-2">
               <SlidersHorizontal className="h-4 w-4" />
@@ -192,11 +355,10 @@ export default function Directory() {
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`text-xs px-3.5 py-1.5 rounded-lg font-medium transition-all ${
-                      selectedCategory === cat
-                        ? 'bg-brand-primary text-white shadow-sm'
-                        : 'bg-white border border-brand-border hover:bg-slate-50 text-brand-muted hover:text-brand-dark'
-                    }`}
+                    className={`text-xs px-3.5 py-1.5 rounded-lg font-medium transition-all ${selectedCategory === cat
+                      ? 'bg-brand-primary text-white shadow-sm'
+                      : 'bg-white border border-brand-border hover:bg-slate-50 text-brand-muted hover:text-brand-dark'
+                      }`}
                   >
                     {cat}
                   </button>
@@ -214,11 +376,10 @@ export default function Directory() {
                   <button
                     key={stg}
                     onClick={() => setSelectedStage(stg)}
-                    className={`text-xs px-3.5 py-1.5 rounded-lg font-medium transition-all ${
-                      selectedStage === stg
-                        ? 'bg-brand-secondary text-brand-dark font-bold shadow-sm'
-                        : 'bg-white border border-brand-border hover:bg-slate-50 text-brand-muted hover:text-brand-dark'
-                    }`}
+                    className={`text-xs px-3.5 py-1.5 rounded-lg font-medium transition-all ${selectedStage === stg
+                      ? 'bg-brand-secondary text-brand-dark font-bold shadow-sm'
+                      : 'bg-white border border-brand-border hover:bg-slate-50 text-brand-muted hover:text-brand-dark'
+                      }`}
                   >
                     {stg}
                   </button>
@@ -248,7 +409,7 @@ export default function Directory() {
                   <h3 className="font-jakarta text-xl font-bold text-brand-dark mb-1">
                     {startup.name}
                   </h3>
-                  
+
                   {/* Founder Row */}
                   <span className="text-xs text-brand-muted font-medium block mb-3">
                     Founded by {startup.founder}
@@ -284,21 +445,30 @@ export default function Directory() {
                       Website
                       <ExternalLink className="h-3 w-3" />
                     </a>
-                    
+
                     <button
                       onClick={() => handleConnect(startup.id, startup.name)}
-                      disabled={connectedIds.includes(startup.id)}
+                      disabled={connections.some((c) => c.profileId === startup.id)}
                       className={`text-xs font-bold px-3.5 py-2 rounded-xl transition-all ${
-                        connectedIds.includes(startup.id)
-                          ? 'bg-emerald-500/10 text-emerald-600 cursor-default flex items-center gap-1.5'
+                        connections.some((c) => c.profileId === startup.id)
+                          ? connections.find((c) => c.profileId === startup.id)?.status === 'accepted'
+                            ? 'bg-emerald-500 text-white cursor-default flex items-center gap-1.5 animate-pulse'
+                            : 'bg-emerald-500/10 text-emerald-600 cursor-default flex items-center gap-1.5'
                           : 'bg-brand-primary text-white hover:bg-brand-primary-hover shadow-sm hover:shadow-md active:scale-97'
-                      }`}
+                        }`}
                     >
-                      {connectedIds.includes(startup.id) ? (
-                        <>
-                          <CheckCircle2 className="h-3.5 w-3.5" />
-                          Requested
-                        </>
+                      {connections.some((c) => c.profileId === startup.id) ? (
+                        connections.find((c) => c.profileId === startup.id)?.status === 'accepted' ? (
+                          <>
+                            <CheckCircle2 className="h-3.5 w-3.5 fill-white text-emerald-500" />
+                            Connected
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            Requested
+                          </>
+                        )
                       ) : (
                         'Request Connection'
                       )}
