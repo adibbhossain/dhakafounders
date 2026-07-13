@@ -51,21 +51,41 @@ Execute the following queries inside your Supabase project's SQL Editor to set u
 
 #### 1. Company Profile Table
 ```sql
-create table public.company_profile (
-  id uuid default gen_random_uuid() primary key,
-  created_at timestamptz default now() not null,
-  clerk_auth_key text unique not null,
-  company_name text not null,
-  website_url text,
-  category text,
-  description text,
-  founder_name text not null,
-  founder_email text,
-  linkedin_url text,
-  hq_location text,
-  team_size text,
-  funding_stage text
+DROP TABLE IF EXISTS public.company_profile CASCADE;
+
+CREATE TABLE public.company_profile (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  clerk_auth_key TEXT UNIQUE NOT NULL,
+  company_name TEXT NOT NULL,
+  website_url TEXT,
+  category TEXT,
+  description TEXT,
+  founder_name TEXT NOT NULL,
+  founder_email TEXT,
+  linkedin_url TEXT,
+  hq_location TEXT,
+  team_size TEXT,
+  funding_stage TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+ALTER TABLE public.company_profile ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read access" 
+  ON public.company_profile 
+  FOR SELECT 
+  USING (true);
+
+CREATE POLICY "Allow public insert access" 
+  ON public.company_profile 
+  FOR INSERT 
+  WITH CHECK (true);
+
+CREATE POLICY "Allow public update access" 
+  ON public.company_profile 
+  FOR UPDATE 
+  USING (true)
+  WITH CHECK (true);
 ```
 
 #### 2. Connection Requests Table
@@ -77,8 +97,11 @@ create table public.connection_request (
   receiver_profile_id uuid references public.company_profile(id) on delete cascade not null,
   message text,
   status text default 'pending' check (status in ('pending', 'accepted', 'declined')) not null,
+  
   constraint unique_active_connection unique (sender_profile_id, receiver_profile_id)
 );
+
+alter table public.connection_request disable row level security;
 ```
 
 ### Installation
@@ -104,11 +127,7 @@ create table public.connection_request (
    npm run build
    ```
 
-## Credits
-
-- **Course Provider**: Datavvy Academy
-- **Assignment Implementation**: Adib (https://github.com/adibbhossain)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](file:///c:/Users/Adib/Desktop/dhakafounders/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](fhttps://github.com/adibbhossain/dhakafounders/blob/main/LICENSE) file for details.
