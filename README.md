@@ -108,3 +108,7 @@ create table public.connection_request (
 
 - **Course Provider**: Datavvy Academy
 - **Assignment Implementation**: Adib (https://github.com/adibbhossain)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](file:///c:/Users/Adib/Desktop/dhakafounders/LICENSE) file for details.
