@@ -130,8 +130,4 @@ alter table public.connection_request disable row level security;
 
 ## License
 
-<<<<<<< HEAD
-This project is licensed under the MIT License - see the [LICENSE](fhttps://github.com/adibbhossain/dhakafounders/blob/main/LICENSE) file for details.
-=======
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/adibbhossain/dhakafounders/blob/main/LICENSE) file for details.
->>>>>>> 65f5c99be72a8573ba75be04a8e19bd0c6491921
+This project is licensed under the MIT License - see the [LICENSE](file:///c:/Users/Adib/Desktop/dhakafounders/LICENSE) file for details.
